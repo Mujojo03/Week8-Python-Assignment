@@ -1,0 +1,65 @@
+# app.py
+
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from src.data_processing import load_metadata, clean_metadata
+from src.analysis import publications_per_year, top_journals, top_title_words
+
+st.set_page_config(page_title="CORD-19 Mini Explorer", layout="wide")
+st.title("Week 7 — CORD-19 Mini Explorer (Student Version)")
+
+DATA_PATH = "data/sample_metadata.csv"
+
+@st.cache_data
+def get_data(uploaded_file):
+    path = uploaded_file if uploaded_file is not None else DATA_PATH
+    df = load_metadata(path)
+    df = clean_metadata(df)
+    return df
+
+# sidebar: upload or sample
+st.sidebar.header("Data")
+choice = st.sidebar.radio("Choose data", ("Sample data", "Upload CSV"))
+uploaded = None
+if choice == "Upload CSV":
+    uploaded = st.sidebar.file_uploader("Upload metadata.csv", type=["csv"])
+df = get_data(uploaded)
+
+st.header("Dataset preview")
+st.write(f"Rows: {df.shape[0]}, Columns: {df.shape[1]}")
+st.dataframe(df.head())
+
+st.subheader("Missing values")
+st.write(df.isnull().sum())
+
+st.subheader("Basic stats")
+st.write(basic := df.describe(include="number").T)
+
+# Visual: publications per year
+st.subheader("Publications per Year")
+pubs = publications_per_year(df)
+if not pubs.empty:
+    fig, ax = plt.subplots()
+    pubs.plot(ax=ax, marker="o")
+    ax.set_xlabel("Year"); ax.set_ylabel("Count"); ax.set_title("Publications per Year")
+    st.pyplot(fig)
+else:
+    st.info("No publish_time data available.")
+
+# Visual: top journals
+st.subheader("Top Journals")
+tj = top_journals(df, n=10)
+st.bar_chart(tj)
+
+# Visual: title words
+st.subheader("Top Title Words")
+stopwords = set(["the","and","of","in","on","a","for","with","to"])
+top_words = top_title_words(df, n=20, stopwords=stopwords)
+if top_words:
+    words, counts = zip(*top_words)
+    fig2, ax2 = plt.subplots(figsize=(8,4))
+    sns.barplot(x=list(counts), y=list(words), ax=ax2)
+    ax2.set_xlabel("Count"); ax2.set_title("Top title words")
+    st.pyplot(fig2) 

@@ -1,0 +1,5 @@
+paper_id,title,abstract,publish_time,journal,authors,source
+p1,Study of virus transmission,"Short abstract about transmission and study design.",2020-03-01,Journal A,"A. Author; B. Writer,","PMC"
+p2,Clinical features of disease,"Clinical study abstract text here.",2020-04-15,Journal B,"C. Clinician","PMC"
+p3,Virology methods,"Methods used in virology studies.",2019-12-10,Journal A,"D. Researcher","arXiv"
+p4,Public health analysis,"Population health and case analysis.",2020-06-20,, "E. Analyst","bioRxiv"

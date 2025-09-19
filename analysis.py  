@@ -1,0 +1,47 @@
+# analysis.py
+
+from pathlib import Path
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from src.data_processing import load_metadata, clean_metadata
+from src.analysis import basic_stats, publications_per_year, top_journals, top_title_words
+
+BASE = Path(__file__).resolve().parent
+DATA = BASE / "data" / "sample_metadata.csv"
+OUT = BASE / "output"
+OUT.mkdir(exist_ok=True)
+
+def main():
+    df = load_metadata(DATA)
+    df = clean_metadata(df)
+    # Save cleaned
+    df.to_csv(OUT / "cleaned_metadata.csv", index=False)
+    print("Saved cleaned dataset.")
+
+    print("\nBasic stats:")
+    print(basic_stats(df))
+
+    print("\nPublications per year:")
+    print(publications_per_year(df))
+
+    print("\nTop journals:")
+    print(top_journals(df))
+
+    print("\nTop title words:")
+    print(top_title_words(df, n=10))
+
+    # Simple plot: publications per year
+    pub_years = publications_per_year(df)
+    if not pub_years.empty:
+        plt.figure()
+        pub_years.plot(kind="line", marker="o")
+        plt.title("Publications by Year")
+        plt.xlabel("Year")
+        plt.ylabel("Number of papers")
+        plt.savefig(OUT / "publications_by_year.png", bbox_inches="tight")
+        print("Saved publications_by_year.png")
+
+if __name__ == "__main__":
+    main()
