@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Union
 import pandas as pd
 
+
 def load_metadata(path: Union[str, Path]) -> pd.DataFrame:
     """Load CSV with basic error handling and try to parse publish_time."""
     path = Path(path)
@@ -17,6 +18,7 @@ def load_metadata(path: Union[str, Path]) -> pd.DataFrame:
     if "publish_time" in df.columns:
         df["publish_time"] = pd.to_datetime(df["publish_time"], errors="coerce")
     return df
+
 
 def clean_metadata(df: pd.DataFrame) -> pd.DataFrame:
     """Drop completely empty rows, fill common NaNs, add derived columns."""
