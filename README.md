@@ -1,4 +1,4 @@
-# CORD-19 Mini Analysis (Week 7)
+# CORD-19 Mini Analysis (Week 8)
 
 This project demonstrates basic analysis of CORD-19 `metadata.csv` and a simple Streamlit app.
 
